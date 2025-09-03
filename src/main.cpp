@@ -15,14 +15,14 @@ int main()
    sf::Text ScreenText(font, "Press 1, 2 or 3");
    ScreenText.setPosition(sf::Vector2f(1500, 900));
 
-   sf::Keyboard::Key key = sf::Keyboard::Key::Unknown;
-
    auto circle = RenderFactory::createShape(1, 150, 100, 300);       // hardcode
    auto square = RenderFactory::createShape(2, 300, 700, 300);       // hardcode
    auto triangle = RenderFactory::createShape(3, 250, 1500, 300);    // hardcode
 
    auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "IShape render");
    window.setFramerateLimit(144);
+
+   sf::Keyboard::Key key = sf::Keyboard::Key::Unknown;
 
    while (window.isOpen())
    {
