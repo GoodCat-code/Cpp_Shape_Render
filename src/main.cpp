@@ -1,6 +1,11 @@
 #include <iostream>
 #include "IShape.h"
 #include <SFML/Graphics.hpp>
+#include <vector>
+#include <string>
+#include <iterator>
+
+void shapeMover(std::unique_ptr<IShape>& shape, std::vector<std::unique_ptr<IShape>>& vector);
 
 int main()
 {
@@ -8,21 +13,11 @@ int main()
    if (!font.openFromFile("assets/fonts/BubbleSans-Regular.otf"))
       std::cerr << "Font not found!";
 
-   bool isCircle = false;     // hardcode
-   bool isSquare = false;     // hardcode
-   bool isTriangle = false;   // hardcode
-   float offset = 0.0;
-   sf::Text ScreenText(font, "Press 1, 2 or 3");
-   ScreenText.setPosition(sf::Vector2f(1500, 900));
-
-   auto circle = RenderFactory::createShape(1, 150, 100, 300);       // hardcode
-   auto square = RenderFactory::createShape(2, 300, 700, 300);       // hardcode
-   auto triangle = RenderFactory::createShape(3, 250, 1500, 300);    // hardcode
+   std::vector<std::unique_ptr<IShape>> arr_shapes;
+   sf::Keyboard::Key key = sf::Keyboard::Key::Unknown;
 
    auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "IShape render");
    window.setFramerateLimit(144);
-
-   sf::Keyboard::Key key = sf::Keyboard::Key::Unknown;
 
    while (window.isOpen())
    {
@@ -39,35 +34,49 @@ int main()
             auto keyEvent = event->getIf<sf::Event::KeyPressed>();
             key = keyEvent->code;
 
-            // facepalm
+            // TODO: ptr params
             switch (key) {
             case sf::Keyboard::Key::Num1:
-               isCircle = !isCircle;
+               shapeMover(RenderFactory::createShape(1, 150, 100, 300), arr_shapes);
                break;
             case sf::Keyboard::Key::Num2:
-               isSquare = !isSquare;
+               shapeMover(RenderFactory::createShape(2, 300, 700, 300), arr_shapes);
                break;
             case sf::Keyboard::Key::Num3:
-               isTriangle = !isTriangle;
+               shapeMover(RenderFactory::createShape(3, 250, 1500, 300), arr_shapes);
                break;
             }
          }
       }
 
       window.clear();
-
+      sf::Text ScreenText(font, "Press 1, 2 or 3");
+      ScreenText.setPosition(sf::Vector2f(1500, 900));
       window.draw(ScreenText);
 
-      // hardcode
-      if (isCircle)
-         circle->draw(window);
-
-      if (isSquare)
-         square->draw(window);
-
-      if (isTriangle)
-         triangle->draw(window);
+      for (auto& el : arr_shapes)
+         el->draw(window);
 
       window.display();
    }
+}
+
+void shapeMover(std::unique_ptr<IShape>& shape, std::vector<std::unique_ptr<IShape>>& vector)
+{
+   if (vector.size() == 0)
+   {
+      vector.push_back(std::move(shape));
+      return;
+   }
+
+   for (std::vector<std::unique_ptr<IShape>>::iterator it = vector.begin(); it != vector.end(); it++)
+   {
+      if (std::string(shape->getName()) == std::string((*it)->getName()))
+      {
+         it = vector.erase(it);
+         return;
+      }
+   }
+
+   vector.push_back(std::move(shape));
 }
