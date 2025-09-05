@@ -1,29 +1,29 @@
 #include "IShape.h"
 
-Circle::Circle(float radius, float x, float y)
+Circle::Circle(float radius, float x, float y, float thikness, sf::Color outColor, sf::Color fillColor)
 {
    circle.setRadius(radius);
    circle.setPosition(sf::Vector2f(x, y));
-   circle.setOutlineThickness(5.0);
-   circle.setOutlineColor(sf::Color::Green);
-   circle.setFillColor(sf::Color::Black);
+   circle.setOutlineThickness(thikness);
+   circle.setOutlineColor(outColor);
+   circle.setFillColor(fillColor);
 }
 
-Square::Square(float size, float x, float y)
+Square::Square(float size, float x, float y, float thikness, sf::Color outColor, sf::Color fillColor)
 { 
-   square.setSize(sf::Vector2f(size, size)); 
-   square.setPosition(sf::Vector2f(x, y)); 
-   square.setOutlineThickness(5.0); 
-   square.setOutlineColor(sf::Color::Red); 
-   square.setFillColor(sf::Color::Black); 
+   square.setSize(sf::Vector2f(size, size));
+   square.setPosition(sf::Vector2f(x, y));
+   square.setOutlineThickness(thikness);
+   square.setOutlineColor(outColor);
+   square.setFillColor(fillColor);
 }
 
-Triangle::Triangle(float size, float x, float y)
+Triangle::Triangle(float size, float x, float y, float thikness, sf::Color outColor, sf::Color fillColor)
 { 
    triangle.setPointCount(3); triangle.setPoint(0, sf::Vector2f(x, y)); 
    triangle.setPoint(1, sf::Vector2f(x - size, y + size)); 
    triangle.setPoint(2, sf::Vector2f(x + size, y + size)); 
-   triangle.setOutlineThickness(5.0); 
-   triangle.setOutlineColor(sf::Color::Yellow); 
-   triangle.setFillColor(sf::Color::Black); 
+   triangle.setOutlineThickness(thikness); 
+   triangle.setOutlineColor(outColor); 
+   triangle.setFillColor(fillColor); 
 }

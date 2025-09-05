@@ -11,10 +11,11 @@ int main()
 {
    sf::Font font;
    if (!font.openFromFile("assets/fonts/BubbleSans-Regular.otf"))
-      std::cerr << "Font not found!";
+      std::cerr << "Font not found! Default used";
 
-   std::vector<std::unique_ptr<IShape>> arr_shapes;
-   sf::Keyboard::Key key = sf::Keyboard::Key::Unknown;
+   std::vector<std::unique_ptr<IShape>> arrShapes;
+   sf::Keyboard::Key pressedKey = sf::Keyboard::Key::Unknown;
+   enum shapeEquivalent { Circle, Square, Triangle };    // masking magic numbers
 
    auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "IShape render");
    window.setFramerateLimit(144);
@@ -32,30 +33,32 @@ int main()
          {
             // input
             auto keyEvent = event->getIf<sf::Event::KeyPressed>();
-            key = keyEvent->code;
+            pressedKey = keyEvent->code;
 
             // TODO: ptr params
-            switch (key) {
+            switch (pressedKey) {
             case sf::Keyboard::Key::Num1:
-               shapeMover(RenderFactory::createShape(1, 150, 100, 300), arr_shapes);
+               shapeMover(RenderFactory::createShape(Circle, 150, 100, 300), arrShapes);
                break;
             case sf::Keyboard::Key::Num2:
-               shapeMover(RenderFactory::createShape(2, 300, 700, 300), arr_shapes);
+               shapeMover(RenderFactory::createShape(Square, 300, 700, 300), arrShapes);
                break;
             case sf::Keyboard::Key::Num3:
-               shapeMover(RenderFactory::createShape(3, 250, 1500, 300), arr_shapes);
+               shapeMover(RenderFactory::createShape(Triangle, 250, 1500, 300), arrShapes);
                break;
             }
          }
       }
 
+      // main window
       window.clear();
-      sf::Text ScreenText(font, "Press 1, 2 or 3");
-      ScreenText.setPosition(sf::Vector2f(1500, 900));
-      window.draw(ScreenText);
+      sf::Text clueScreenText(font, "Press 1, 2 or 3");
+      clueScreenText.setPosition(sf::Vector2f(1500, 900));
+      window.draw(clueScreenText);
 
-      for (auto& el : arr_shapes)
-         el->draw(window);
+      // Scene
+      for (auto& shape : arrShapes)
+         shape->shapeRender(window);
 
       window.display();
    }
@@ -73,7 +76,7 @@ void shapeMover(std::unique_ptr<IShape>& shape, std::vector<std::unique_ptr<ISha
    {
       if (std::string(shape->getName()) == std::string((*it)->getName()))
       {
-         it = vector.erase(it);
+         vector.erase(it);
          return;
       }
    }
